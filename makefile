@@ -11,7 +11,7 @@ bin/connectionHandler.o: src/connectionHandler.cpp
 
 bin/echoClient.o: src/echoClient.cpp
 	g++ $(CFLAGS) -o bin/echoClient.o src/echoClient.cpp
-	
+
 .PHONY: clean
 clean:
 	rm -f bin/*

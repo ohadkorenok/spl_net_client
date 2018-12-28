@@ -10,6 +10,7 @@ public:
 
 private:
     ConnectionHandler &handler;
+    std::vector<std::string> parseFollow(std::string match);
 };
 
 

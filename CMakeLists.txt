@@ -10,3 +10,5 @@ add_executable(spl_net_client
         src/connectionHandler.cpp
         src/echoClient.cpp
         makefile include/serverToClient.h include/clientToServer.h src/clientToServer.cpp src/serverToClient.cpp)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
