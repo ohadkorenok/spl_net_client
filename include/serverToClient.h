@@ -9,11 +9,13 @@
 
 class ServerToClient{
 public:
-    ServerToClient(ConnectionHandler &connectionHandler);
+    ServerToClient(ConnectionHandler &connectionHandler,bool isTermiated);
     void operator()();
+    short bytesToShort(char* bytesArr,int indexOfstart,int indexTofinish);
 
 private:
     ConnectionHandler &handler;
+    bool isTermiated;
 
 };
 #endif
