@@ -9,4 +9,4 @@ add_executable(spl_net_client
         include/connectionHandler.h
         src/connectionHandler.cpp
         src/echoClient.cpp
-        makefile)
+        makefile include/serverToClient.h include/clientToServer.h src/clientToServer.cpp src/serverToClient.cpp)
