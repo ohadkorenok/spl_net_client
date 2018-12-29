@@ -46,10 +46,13 @@ void ClientToServer::operator()() {
                 cout << "FOLLOW command. after follow/unfollow: ";
 
                 /** numberOfUsers **/
-                handler.sendBytes(smatch1[2].str().c_str(), (int) smatch1[2].str().length());
+//                handler.sendBytes(smatch1[2].str().c_str(), (int) smatch1[2].str().length());
                 cout << "FOLLOW command. after num of users: ";
 
                 int numberOfUsers = stoi(smatch1[2].str());
+                shortToBytes((short) numberOfUsers, bytesArr);
+                handler.sendBytes(bytesArr, 2);
+
                 string stringOfMatch = smatch1[3].str();
                 cout << "FOLLOW command. string of match : "+stringOfMatch << endl;
                 for (unsigned int i = 0; i < numberOfUsers - 1; ++i) {
