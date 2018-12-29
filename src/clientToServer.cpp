@@ -23,7 +23,7 @@ void ClientToServer::operator()() {
                 {"REGISTER", regex("REGISTER\\s* (\\w*)\\s*(\\w*)\\s*")},
                 {"LOGIN",    regex("LOGIN\\s* (\\w*)\\s*(\\w*)\\s*")},
                 {"LOGOUT",   regex("LOGOUT")},
-                {"FOLLOW",   regex("FOLLOW\\s*(\\d)\\s*(\\d+)(.*)")},
+                {"FOLLOW",   regex("FOLLOW\\s*(\\d)\\s*(\\d+)\\s*(.*)")},
                 {"POST",     regex("POST\\s(\\.*)")},
                 {"PM",       regex("PM\\s*(\\w*)\\s(.*)")},
                 {"USERLIST", regex("USERLIST")},
@@ -37,25 +37,35 @@ void ClientToServer::operator()() {
             if (firstWord == "FOLLOW") {
                 /** opcode **/
                 shortToBytes((short) 4, bytesArr);
+                cout << "FOLLOW command. opcode is : "+4;
+
                 handler.sendBytes(bytesArr, 2);
                 /** Follow/Unfollow **/
+
                 handler.sendBytes(smatch1[1].str().c_str(), (int) smatch1[1].str().length());
+                cout << "FOLLOW command. after follow/unfollow: ";
+
                 /** numberOfUsers **/
                 handler.sendBytes(smatch1[2].str().c_str(), (int) smatch1[2].str().length());
+                cout << "FOLLOW command. after num of users: ";
 
                 int numberOfUsers = stoi(smatch1[2].str());
                 string stringOfMatch = smatch1[3].str();
+                cout << "FOLLOW command. string of match : "+stringOfMatch << endl;
                 for (unsigned int i = 0; i < numberOfUsers - 1; ++i) {
                     int space = stringOfMatch.find(" ");
                     string userName = stringOfMatch.substr(0, space);
+                    cout << " Username is : "+userName << endl;
+
                     handler.sendFrameAscii(userName, '\0');
                     stringOfMatch = stringOfMatch.substr(space + 1);
                 }
+                cout << " Username is : "+stringOfMatch << endl;
+
+                handler.sendFrameAscii(stringOfMatch, '\0');
             }
 
             if (firstWord == "REGISTER") {
-
-
                 shortToBytes((short) 1, bytesArr);
                 handler.sendBytes(bytesArr, 2);
                 string userName = smatch1[1].str();
