@@ -22,13 +22,13 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     ClientToServer cts = ClientToServer(connectionHandler);
-    cts.operator()();
-//    ServerToClient s?tc= ServerToClient(connectionHandler);
-//    std::thread nitzanWork(std::ref(stc));
-//    std::thread ohadWork(std::ref(cts));
+//    cts.operator()();
+    ServerToClient stc= ServerToClient(connectionHandler,false);
+    std::thread nitzanWork(std::ref(stc));
+    std::thread ohadWork(std::ref(cts));
 //
-//    nitzanWork.join();
-//    ohadWork.join();
+    nitzanWork.join();
+    ohadWork.join();
 
 
 //    //From here we will see the rest of the ehco client implementation:

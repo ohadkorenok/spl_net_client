@@ -3,13 +3,19 @@ using namespace std;
 
 ServerToClient:: ServerToClient(ConnectionHandler &connectionHandler,bool isTerminated): handler(connectionHandler) , isTermiated(false)  {}
 
+short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTofinish){
+    short result = (short)((bytesArr[indexOfstart] & 0xff) << 8);
+    result += (short)(bytesArr[indexTofinish] & 0xff);
+    return result;
+}
+
 void ServerToClient::operator()() {
     while (!isTermiated) {
         char bytes[4];
         handler.getBytes(bytes, 4);
         short opCode = bytesToShort(bytes, 0, 1);
         switch (opCode) {
-            case 9: {
+            case 9: { //Notifcation
 
                 short notificationtype = bytesToShort(bytes, 2, 3);
                 string postingUser;
@@ -23,7 +29,7 @@ void ServerToClient::operator()() {
                 }
                 break;
             }
-            case 10: {
+            case 10: { // ACK
                 short ackmessageOpcode = bytesToShort(bytes, 2, 3);
                 switch (ackmessageOpcode) {
                     case 3:
@@ -36,7 +42,7 @@ void ServerToClient::operator()() {
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
-                            handler.getFrameAscii(toAdd, ' ');
+                            handler.getFrameAscii(toAdd, '\0');
                             collectingUsers.append(toAdd);
                         }
                         toAdd = "";
@@ -53,7 +59,7 @@ void ServerToClient::operator()() {
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
-                            handler.getFrameAscii(toAdd, ' ');
+                            handler.getFrameAscii(toAdd, '\0');
                             collectingUsers.append(toAdd);
                         }
                         toAdd = "";
@@ -67,8 +73,9 @@ void ServerToClient::operator()() {
                     default:
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
                 }
+                break;
             }
-                case 11: {
+                case 11: { //Error
                     short errormessageOpcode = bytesToShort(bytes, 2, 3);
                     cout << "ERROR " + std::string(std::to_string((int) errormessageOpcode)) << endl;
                     break;
@@ -79,9 +86,3 @@ void ServerToClient::operator()() {
             }
         }
     }
-
-short bytesToShort(char* bytesArr,int indexOfstart,int indexTofinish) {
-    short result = (short)((bytesArr[indexOfstart] & 0xff) << 8);
-    result += (short)(bytesArr[indexTofinish] & 0xff);
-    return result;
-}
