@@ -31,6 +31,7 @@ void ClientToServer::operator()() {
         };
         std::smatch smatch1;
         char *bytesArr = new char[2];
+//        bytesArr= {'a','b','c','d'};
         regex_search(line, smatch1, regexDict[firstWord]);
         if (!smatch1.empty()) {
             if (firstWord == "FOLLOW") {
@@ -53,10 +54,13 @@ void ClientToServer::operator()() {
             }
 
             if (firstWord == "REGISTER") {
+
+
                 shortToBytes((short) 1, bytesArr);
                 handler.sendBytes(bytesArr, 2);
                 string userName = smatch1[1].str();
                 string password = smatch1[2].str();
+                cout << "Register command. Username is : "+userName+" and Password is : "+password << endl;
                 handler.sendFrameAscii(userName, '\0');
                 handler.sendFrameAscii(password, '\0');
             }
