@@ -5,12 +5,13 @@
 
 class ClientToServer{
 public:
-    ClientToServer(ConnectionHandler &connectionHandler);
+    ClientToServer(ConnectionHandler &connectionHandler, bool *isTerminated);
     void operator()();
 
 private:
     ConnectionHandler &handler;
     std::vector<std::string> parseFollow(std::string match);
+    bool *isTerminated;
 };
 
 

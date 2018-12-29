@@ -1,7 +1,7 @@
 #include "serverToClient.h"
 using namespace std;
 
-ServerToClient:: ServerToClient(ConnectionHandler &connectionHandler,bool isTerminated): handler(connectionHandler) , isTermiated(false)  {}
+ServerToClient:: ServerToClient(ConnectionHandler &connectionHandler,bool *isTerminated): handler(connectionHandler) , isTermiated(isTerminated)  {}
 
 short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTofinish){
     short result = (short)((bytesArr[indexOfstart] & 0xff) << 8);
@@ -10,7 +10,7 @@ short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTo
 }
 
 void ServerToClient::operator()() {
-    while (!isTermiated) {
+    while (!*isTermiated) {
         char bytes[4];
         handler.getBytes(bytes, 4);
         short opCode = bytesToShort(bytes, 0, 1);
@@ -33,7 +33,7 @@ void ServerToClient::operator()() {
                 short ackmessageOpcode = bytesToShort(bytes, 2, 3);
                 switch (ackmessageOpcode) {
                     case 3:
-                        isTermiated=true;
+                        *isTermiated=true;
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
                     case 4: {
                         char moreBytes[2];

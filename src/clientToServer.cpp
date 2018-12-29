@@ -1,7 +1,7 @@
 #include "clientToServer.h"
 #include "regex"
 
-ClientToServer::ClientToServer(ConnectionHandler &connectionHandler) : handler(connectionHandler) {}
+ClientToServer::ClientToServer(ConnectionHandler &connectionHandler,bool *isTerminated) : handler(connectionHandler) , isTerminated(isTerminated) {}
 
 using namespace std;
 
@@ -12,7 +12,7 @@ static void shortToBytes(short num, char *bytesArr) {
 
 void ClientToServer::operator()() {
 
-    while (1) {
+    while (!*isTerminated) {
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
