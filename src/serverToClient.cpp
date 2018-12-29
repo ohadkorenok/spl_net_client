@@ -32,9 +32,11 @@ void ServerToClient::operator()() {
             case 10: { // ACK
                 short ackmessageOpcode = bytesToShort(bytes, 2, 3);
                 switch (ackmessageOpcode) {
-                    case 3:
-                        *isTermiated=true;
+                    case 3: {
+                        *isTermiated = true;
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
+                        break;
+                    }
                     case 4: {
                         char moreBytes[2];
                         handler.getBytes(moreBytes, 2);
@@ -72,6 +74,7 @@ void ServerToClient::operator()() {
                     }
                     default:
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
+                        break;
                 }
                 break;
             }
@@ -82,6 +85,7 @@ void ServerToClient::operator()() {
                 }
                 default: {
                     std::cout << "Didn't recieve any recongizable message from socket" << std::endl;
+                    break;
                 }
             }
         }
