@@ -103,11 +103,6 @@ void ClientToServer::operator()() {
         } else {
             cout << "no match found!" << endl;
         }
-        int len = line.length();
-        if (!handler.sendLine(line)) {
-            std::cout << "Disconnected. Exiting...\n" << std::endl;
-            break;
-        }
 
     }
 
