@@ -21,7 +21,7 @@ void ClientToServer::operator()() {
 
         map<string, regex> regexDict = {
                 {"REGISTER", regex("REGISTER\\s* (\\w*)\\s*(\\w*)\\s*")},
-                {"LOGIN",    regex("LOGIN\\s* (\\w*)\\s(\\w*)\\s")},
+                {"LOGIN",    regex("LOGIN\\s* (\\w*)\\s*(\\w*)\\s*")},
                 {"LOGOUT",   regex("LOGOUT")},
                 {"FOLLOW",   regex("FOLLOW\\s*(\\d)\\s*(\\d+)(.*)")},
                 {"POST",     regex("POST\\s(\\.*)")},
