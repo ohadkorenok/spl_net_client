@@ -21,14 +21,23 @@ int main(int argc, char *argv[]) {
         std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
         return 1;
     }
-    ClientToServer cts = ClientToServer(connectionHandler);
+    bool *isTerminated=new bool;
+    *isTerminated=false;
+    bool *logoutNotsent=new bool;
+    *logoutNotsent=true;
+    ClientToServer cts = ClientToServer(connectionHandler,isTerminated,logoutNotsent);
 //    cts.operator()();
-    ServerToClient stc= ServerToClient(connectionHandler,false);
+    ServerToClient stc= ServerToClient(connectionHandler,isTerminated,logoutNotsent);
     std::thread nitzanWork(std::ref(stc));
+//    nitzanWork.get_id();
     std::thread ohadWork(std::ref(cts));
+//    std::terminate();
 //
     nitzanWork.join();
     ohadWork.join();
+
+    delete(isTerminated);
+    delete(logoutNotsent);
 
 
 //    //From here we will see the rest of the ehco client implementation:

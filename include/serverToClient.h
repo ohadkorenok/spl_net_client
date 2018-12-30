@@ -9,13 +9,15 @@
 
 class ServerToClient{
 public:
-    ServerToClient(ConnectionHandler &connectionHandler,bool isTermiated);
+    ServerToClient(ConnectionHandler &connectionHandler,bool *isTermiatedbool ,bool *logoutNotsent);
     void operator()();
     short bytesToShort(char* bytesArr,int indexOfstart,int indexTofinish);
 
 private:
     ConnectionHandler &handler;
-    bool isTermiated;
+    bool *isTermiated;
+    bool *logoutNotsent;
+
 
 };
 #endif

@@ -1,7 +1,7 @@
 #include "clientToServer.h"
 #include "regex"
 
-ClientToServer::ClientToServer(ConnectionHandler &connectionHandler) : handler(connectionHandler) {}
+ClientToServer::ClientToServer(ConnectionHandler &connectionHandler,bool *isTerminated,bool *logoutNotsent) : handler(connectionHandler) , isTerminated(isTerminated) ,logoutNotsent(logoutNotsent) {}
 
 using namespace std;
 
@@ -12,12 +12,13 @@ static void shortToBytes(short num, char *bytesArr) {
 
 void ClientToServer::operator()() {
 
-    while (1) {
+    while (!*isTerminated) {
         const short bufsize = 1024;
         char buf[bufsize];
-        std::cin.getline(buf, bufsize);
-        std::string line(buf);
-        string firstWord = line.substr(0, line.find(" "));
+        if(*logoutNotsent) {
+            std::cin.getline(buf, bufsize);
+            std::string line(buf);
+            string firstWord = line.substr(0, line.find(" "));
 
         map<string, regex> regexDict = {
                 {"REGISTER", regex("REGISTER\\s* (\\w*)\\s*(\\w*)\\s*")},

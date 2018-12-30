@@ -1,7 +1,7 @@
 #include "serverToClient.h"
 using namespace std;
 
-ServerToClient:: ServerToClient(ConnectionHandler &connectionHandler,bool isTerminated): handler(connectionHandler) , isTermiated(false)  {}
+ServerToClient:: ServerToClient(ConnectionHandler &connectionHandler,bool *isTerminated,bool *logoutNotsent): handler(connectionHandler) , isTermiated(isTerminated), logoutNotsent(logoutNotsent) {}
 
 short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTofinish){
     short result = (short)((bytesArr[indexOfstart] & 0xff) << 8);
@@ -10,14 +10,14 @@ short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTo
 }
 
 void ServerToClient::operator()() {
-    while (!isTermiated) {
+    while (!*isTermiated) {
         char bytes[4];
         handler.getBytes(bytes, 4);
-        short opCode = bytesToShort(bytes, 0, 1);
+        short opCode = ServerToClient::bytesToShort(bytes, 0, 1);
         switch (opCode) {
             case 9: { //Notifcation
 
-                short notificationtype = bytesToShort(bytes, 2, 3);
+                short notificationtype = ServerToClient::bytesToShort(bytes, 2, 3);
                 string postingUser;
                 handler.getFrameAscii(postingUser, '\0');
                 string content;
@@ -30,15 +30,17 @@ void ServerToClient::operator()() {
                 break;
             }
             case 10: { // ACK
-                short ackmessageOpcode = bytesToShort(bytes, 2, 3);
+                short ackmessageOpcode = ServerToClient::bytesToShort(bytes, 2, 3);
                 switch (ackmessageOpcode) {
-                    case 3:
-                        isTermiated=true;
+                    case 3: {
+                        *isTermiated = true;
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
+                        break;
+                    }
                     case 4: {
                         char moreBytes[2];
                         handler.getBytes(moreBytes, 2);
-                        short numofUsersToFollow = bytesToShort(moreBytes, 0, 1);
+                        short numofUsersToFollow = ServerToClient::bytesToShort(moreBytes, 0, 1);
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
@@ -55,7 +57,7 @@ void ServerToClient::operator()() {
                     case 7: {
                         char moreBytes[2];
                         handler.getBytes(moreBytes, 2);
-                        short numofUsersToFollow = bytesToShort(moreBytes, 0, 1);
+                        short numofUsersToFollow = ServerToClient::bytesToShort(moreBytes, 0, 1);
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
@@ -72,16 +74,21 @@ void ServerToClient::operator()() {
                     }
                     default:
                         cout << "ACK " + std::string(std::to_string((int) ackmessageOpcode)) << endl;
+                        break;
                 }
                 break;
             }
                 case 11: { //Error
-                    short errormessageOpcode = bytesToShort(bytes, 2, 3);
+                    short errormessageOpcode = ServerToClient::bytesToShort(bytes, 2, 3);
+                    if(errormessageOpcode==3){
+                        *logoutNotsent=true;
+                    }
                     cout << "ERROR " + std::string(std::to_string((int) errormessageOpcode)) << endl;
                     break;
                 }
                 default: {
                     std::cout << "Didn't recieve any recongizable message from socket" << std::endl;
+                    break;
                 }
             }
         }
