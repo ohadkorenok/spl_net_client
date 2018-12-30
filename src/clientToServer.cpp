@@ -20,25 +20,24 @@ void ClientToServer::operator()() {
             std::string line(buf);
             string firstWord = line.substr(0, line.find(" "));
 
-            map<string, regex> regexDict = {
-                    {"REGISTER", regex("REGISTER\\s* (\\w*)\\s*(\\w*)\\s*")},
-                    {"LOGIN",    regex("LOGIN\\s* (\\w*)\\s*(\\w*)\\s*")},
-                    {"LOGOUT",   regex("LOGOUT")},
-                    {"FOLLOW",   regex("FOLLOW\\s*(\\d)\\s*(\\d+)\\s*(.*)")},
-                    {"POST",     regex("POST\\s(\\.*)")},
-                    {"PM",       regex("PM\\s*(\\w*)\\s(.*)")},
-                    {"USERLIST", regex("USERLIST")},
-                    {"STAT",     regex("STAT \\s* (\\w*)")}
-            };
-            std::smatch smatch1;
-            char *bytesArr = new char[2];
-//        bytesArr= {'a','b','c','d'};
-            regex_search(line, smatch1, regexDict[firstWord]);
-            if (!smatch1.empty()) {
-                if (firstWord == "FOLLOW") {
-                    /** opcode **/
-                    shortToBytes((short) 4, bytesArr);
-                    cout << "FOLLOW command. opcode is : " + 4;
+        map<string, regex> regexDict = {
+                {"REGISTER", regex("REGISTER\\s+(\\w+)\\s+(\\w+)\\s*")},
+                {"LOGIN",    regex("LOGIN\\s+(\\w+)\\s+(\\w+)\\s*")},
+                {"LOGOUT",   regex("LOGOUT")},
+                {"FOLLOW",   regex("FOLLOW\\s+(\\d)\\s*(\\d+)\\s+(.*)")},
+                {"POST",     regex("POST\\s(\\.*)")},
+                {"PM",       regex("PM\\s+(\\w+)\\s(.*)")},
+                {"USERLIST", regex("USERLIST")},
+                {"STAT",     regex("STAT\\s+(\\w+)")}
+        };
+        std::smatch smatch1;
+        char *bytesArr = new char[2];
+        regex_search(line, smatch1, regexDict[firstWord]);
+        if (!smatch1.empty()) {
+            if (firstWord == "FOLLOW") {
+                /** opcode **/
+                shortToBytes((short) 4, bytesArr);
+                cout << "FOLLOW command. opcode is : "+4;
 
                     handler.sendBytes(bytesArr, 2);
                     /** Follow/Unfollow **/
