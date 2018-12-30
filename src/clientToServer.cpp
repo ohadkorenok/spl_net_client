@@ -25,7 +25,7 @@ void ClientToServer::operator()() {
                 {"LOGIN",    regex("LOGIN\\s+(\\w+)\\s+(\\w+)\\s*")},
                 {"LOGOUT",   regex("LOGOUT")},
                 {"FOLLOW",   regex("FOLLOW\\s+(\\d)\\s*(\\d+)\\s+(.*)")},
-                {"POST",     regex("POST\\s(\\.*)")},
+                {"POST",     regex("POST\\s(.*)")},
                 {"PM",       regex("PM\\s+(\\w+)\\s(.*)")},
                 {"USERLIST", regex("USERLIST")},
                 {"STAT",     regex("STAT\\s+(\\w+)")}
@@ -94,6 +94,8 @@ void ClientToServer::operator()() {
                     shortToBytes((short) 5, bytesArr);
                     handler.sendBytes(bytesArr, 2);
                     string content = smatch1[1];
+                    cout << "post command. CONTENT is : " + content << endl;
+
                     handler.sendFrameAscii(content, '\0');
                 }
                 if (firstWord == "PM") {
