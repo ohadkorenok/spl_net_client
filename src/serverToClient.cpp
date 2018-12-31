@@ -46,9 +46,10 @@ void ServerToClient::operator()() {
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
+                            toAdd= "";
                             handler.getFrameAscii(toAdd, '\0');
                             toAdd=toAdd.substr(0,toAdd.length()-1);
-                            collectingUsers.append(toAdd);
+                            collectingUsers.append(toAdd+" ");
                         }
                         toAdd = "";
                         handler.getFrameAscii(toAdd, '\0');
@@ -65,9 +66,10 @@ void ServerToClient::operator()() {
                         string collectingUsers = "";
                         string toAdd = "";
                         for (int i = 0; i < numofUsersToFollow - 1; i++) {
+                             toAdd= "";
                             handler.getFrameAscii(toAdd, '\0');
                             toAdd=toAdd.substr(0,toAdd.length()-1);
-                            collectingUsers.append(toAdd);
+                            collectingUsers.append(toAdd+" ");
                         }
                         toAdd = "";
                         handler.getFrameAscii(toAdd, '\0');
