@@ -41,8 +41,10 @@ void ClientToServer::operator()() {
 
                     handler.sendBytes(bytesArr, 2);
                     /** Follow/Unfollow **/
-
-                    handler.sendBytes(smatch1[1].str().c_str(), (int) smatch1[1].str().length());
+                    char bytesToSend[1];
+                    bytesToSend[0] = smatch1[1].str()[0]-48;
+                    handler.sendBytes(bytesToSend, 1);
+//                    handler.sendBytes(smatch1[1].str().c_str(), (int) smatch1[1].str().length());
                     cout << "FOLLOW command. after follow/unfollow: ";
 
                     /** numberOfUsers **/
@@ -55,7 +57,7 @@ void ClientToServer::operator()() {
 
                     string stringOfMatch = smatch1[3].str();
                     cout << "FOLLOW command. string of match : " + stringOfMatch << endl;
-                    for (unsigned int i = 0; i < numberOfUsers - 1; ++i) {
+                    for (unsigned int i = 0; i < size_t(numberOfUsers - 1); ++i) {
                         int space = stringOfMatch.find(" ");
                         string userName = stringOfMatch.substr(0, space);
                         cout << " Username is : " + userName << endl;
@@ -119,6 +121,7 @@ void ClientToServer::operator()() {
             } else {
                 cout << "no match found!" << endl;
             }
+            delete bytesArr;
 
         }
     }

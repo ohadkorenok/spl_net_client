@@ -11,13 +11,16 @@ short ServerToClient::bytesToShort(char *bytesArr, int indexOfstart, int indexTo
 
 void ServerToClient::operator()() {
     while (!*isTermiated) {
-        char bytes[4];
-        handler.getBytes(bytes, 4);
+        char bytes[2];
+        handler.getBytes(bytes, 2);
         short opCode = ServerToClient::bytesToShort(bytes, 0, 1);
         switch (opCode) {
             case 9: { //Notifcation
-
-                short notificationtype = ServerToClient::bytesToShort(bytes, 2, 3);
+                char byteStoGet[1];
+                handler.getBytes(byteStoGet,1);
+                char type=byteStoGet[0];
+                short notificationtype=(short)type;
+//                short notificationtype = ServerToClient::bytesToShort(bytes, 2, 3);
                 string postingUser;
                 handler.getFrameAscii(postingUser, '\0');
                 postingUser=postingUser.substr(0,postingUser.length()-1);
@@ -32,7 +35,8 @@ void ServerToClient::operator()() {
                 break;
             }
             case 10: { // ACK
-                short ackmessageOpcode = ServerToClient::bytesToShort(bytes, 2, 3);
+                handler.getBytes(bytes, 2);
+                short ackmessageOpcode = ServerToClient::bytesToShort(bytes, 0, 1);
                 switch (ackmessageOpcode) {
                     case 3: {
                         *isTermiated = true;
@@ -99,7 +103,8 @@ void ServerToClient::operator()() {
                 break;
             }
                 case 11: { //Error
-                    short errormessageOpcode = ServerToClient::bytesToShort(bytes, 2, 3);
+                    handler.getBytes(bytes, 2);
+                    short errormessageOpcode = ServerToClient::bytesToShort(bytes, 0, 1);
                     if(errormessageOpcode==3){
                         *logoutNotsent=true;
                     }

@@ -1,9 +1,9 @@
 #include <stdlib.h>
-#include <connectionHandler.h>
+#include "connectionHandler.h"
 #include <iostream>
 #include <thread>
-#include <clientToServer.h>
-#include <serverToClient.h>
+#include "clientToServer.h"
+#include "serverToClient.h"
 
 /**
 * This code assumes that the server replies the exact text the client sent it (as opposed to the practical session example)

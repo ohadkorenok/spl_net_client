@@ -10,7 +10,6 @@ find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++11 -pthread -lboost_thread")
 
-
 add_executable(spl_net_client
         include/connectionHandler.h
         include/serverToClient.h
